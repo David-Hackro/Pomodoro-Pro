@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PomodoroPro</string>
+    <string name="stop_pomodoro">Stop Pomodoro</string>
+    <string name="start_pomodoro">Start Pomodoro</string>
+</resources>
