@@ -6,6 +6,7 @@ import com.david.hackro.pomodoropro.domain.PomodoroSetting
 interface IRepository {
 
     suspend fun createPomodoro(): CurrentPomodoro?
+    suspend fun stopPomodoro()
 
     suspend fun getPomodoroSetting(): PomodoroSetting
 }

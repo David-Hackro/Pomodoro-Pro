@@ -1,6 +1,6 @@
 package com.david.hackro.pomodoropro
 
-val animationTime = getSecondsInMilliSeconds(1)
+val animationTime = getSecondsInMilliSeconds(10)
 
 const val MAX_TIME_IN_MIN = 25
 

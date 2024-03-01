@@ -31,6 +31,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.david.hackro.pomodoropro.MAX_TIME_IN_MIN
 import com.david.hackro.pomodoropro.presentation.MainViewModel
 import com.david.hackro.pomodoropro.R
+import com.david.hackro.pomodoropro.animationTime
 import com.david.hackro.pomodoropro.getMinutesInMilliSeconds
 
 @Composable
@@ -39,7 +40,7 @@ fun CircularProgressbar(
     foregroundIndicatorColor: Color = Color(0xFF35898f),
     shadowColor: Color = Color.Gray,
     indicatorThickness: Dp = 14.dp,
-    animationDuration: Int = 0,
+    animationDuration: Int = animationTime,
     uiState: MainViewModel.Pomodoro
 ) {
 
@@ -47,7 +48,7 @@ fun CircularProgressbar(
         mutableFloatStateOf(-1f)
     }
 
-    dataUsageRemember = uiState.time
+    dataUsageRemember = uiState.secondsCompleted
 
     // This is to animate the foreground indicator
     val dataUsageAnimate = animateFloatAsState(
@@ -85,7 +86,7 @@ fun CircularProgressbar(
             )
 
             // Convert the dataUsage to angle
-            val sweepAngle = calculateCurrentAngle(dataUsageAnimate)
+            val sweepAngle = calculateCurrentAngle(dataUsageAnimate, uiState.period)
 
             // Foreground indicator
             drawArc(
@@ -116,7 +117,7 @@ fun CircularProgressbar(
 }
 
 
-private fun calculateCurrentAngle(dataUsageAnimate: State<Float>) =
+private fun calculateCurrentAngle(dataUsageAnimate: State<Float>, period: Long) =
     (dataUsageAnimate.value) * 360 / getMinutesInMilliSeconds(MAX_TIME_IN_MIN)
 
 @Composable

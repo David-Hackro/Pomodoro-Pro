@@ -2,9 +2,9 @@ package com.david.hackro.pomodoropro.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.david.hackro.pomodoropro.MAX_TIME_IN_MIN
 import com.david.hackro.pomodoropro.animationTime
 import com.david.hackro.pomodoropro.domain.CreatePomodoroUseCase
+import com.david.hackro.pomodoropro.domain.DeleteCurrentPomodoroUseCase
 import com.david.hackro.pomodoropro.domain.GetPomodoroSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -19,24 +19,24 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val createPomodoroUseCase: CreatePomodoroUseCase,
-    private val getPomodoroSettingsUseCase: GetPomodoroSettingsUseCase
+    private val getPomodoroSettingsUseCase: GetPomodoroSettingsUseCase,
+    private val deleteCurrentPomodoroUseCase: DeleteCurrentPomodoroUseCase,
 ) :
     ViewModel() {
 
     private val _state = MutableStateFlow(Pomodoro())
     val state: StateFlow<Pomodoro> = _state.asStateFlow()
-    private var startTime: Long = 0L
     private lateinit var updateProgressJob: Job
-
 
     private fun updateProgress() {
         updateProgressJob = viewModelScope.launch {
+            val period = getPomodoroSettingsUseCase.invoke().minutesPeriod
 
-            for (i in 0..MAX_TIME_IN_MIN) {
-                val secondsCompleted = getSecondsCompleted() * 1000
+            while ((System.currentTimeMillis() - _state.value.startTime) < period) {
+                val secondsCompleted = getSecondsCompleted()
 
                 _state.update {
-                    it.copy(time = secondsCompleted.toFloat())
+                    it.copy(secondsCompleted = secondsCompleted.toFloat(), isFirstTime = false)
                 }
 
                 delay(animationTime.toLong())
@@ -44,10 +44,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getSecondsCompleted() = ((getCurrentTimeStand() - state.value.startTime) / 1000)
+    private fun getSecondsCompleted() = (System.currentTimeMillis() - state.value.startTime)
 
     fun startPomodoro() = viewModelScope.launch {
         val result = createPomodoroUseCase.invoke()
+        val period = getPomodoroSettingsUseCase.invoke().minutesPeriod
 
         if (result == null) {
             _state.update {
@@ -62,29 +63,29 @@ class MainViewModel @Inject constructor(
                 startTime = result.startTime,
                 isFirstTime = true,
                 isPomodoroRunning = true,
-                time = 0.1f
+                secondsCompleted = 0.1f,
+                period = period
             )
         }
 
         updateProgress()
     }
 
-    fun stopPomodoro() {
+    fun stopPomodoro()  = viewModelScope.launch {
+        deleteCurrentPomodoroUseCase.invoke()
+
         _state.update {
-            Pomodoro()
+            Pomodoro(isFirstTime = true)
         }
 
         updateProgressJob.cancel()
     }
 
-    private fun getCurrentTimeStand(): Long {
-        return System.currentTimeMillis()
-    }
-
     data class Pomodoro(
         val startTime: Long = 0L,
         val isFirstTime: Boolean = false,
-        var time: Float = 0f,
-        var isPomodoroRunning: Boolean = false
+        var secondsCompleted: Float = 0f,
+        var isPomodoroRunning: Boolean = false,
+        val period: Long = 0L
     )
 }

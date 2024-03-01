@@ -28,7 +28,6 @@ object PomodoroModule {
         return GetPomodoroSettingsUseCase(repository)
     }
 
-
      @Module
      @InstallIn(SingletonComponent::class)
      interface BindRepository {

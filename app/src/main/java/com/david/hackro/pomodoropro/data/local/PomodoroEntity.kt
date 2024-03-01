@@ -8,11 +8,14 @@ import com.david.hackro.pomodoropro.domain.CurrentPomodoro
 @Entity
 class CurrentPomodoroEntity {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 
     @ColumnInfo
     var startTime: Long? = null
+
+    @ColumnInfo
+    var endTime: Long? = null
 }
 
 

@@ -11,12 +11,8 @@ const val INVALID_REGISTER = -1L
 class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) : IRepository {
 
     override suspend fun createPomodoro(): CurrentPomodoro? {
-
         val currentTime = System.currentTimeMillis()
-        val entity = CurrentPomodoroEntity().apply {
-            startTime = currentTime
-        }
-
+        val entity = CurrentPomodoroEntity().apply { startTime = currentTime }
         val result = localSource.insertCurrentPomodoro(entity).run {
             this != INVALID_REGISTER
         }
@@ -28,10 +24,19 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
         }
     }
 
-    override suspend fun getPomodoroSetting(): PomodoroSetting {
-        val minutes = 25
-        return PomodoroSetting(0, minutes)
+    override suspend fun stopPomodoro() {
+        localSource.run {
+            val currentPomodoro = getCurrentPomodoro()
+            currentPomodoro.apply {
+                endTime = System.currentTimeMillis()
+            }
+
+            updateCurrentPomodoro(currentPomodoro)
+        }
     }
 
-
+    override suspend fun getPomodoroSetting(): PomodoroSetting {
+        val minutes = 25 * 60 * 1000L
+        return PomodoroSetting(0, minutes)
+    }
 }
