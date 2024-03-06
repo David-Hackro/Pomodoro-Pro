@@ -31,11 +31,12 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.david.hackro.pomodoropro.R
 import com.david.hackro.pomodoropro.presentation.MainViewModel
+import com.david.hackro.pomodoropro.presentation.ui.theme.ProgressBarColor
 
 @Composable
 fun CircularProgressbar(
     size: Dp = 260.dp,
-    foregroundIndicatorColor: Color = Color(0xFF35898f),
+    foregroundIndicatorColor: Color = ProgressBarColor,
     shadowColor: Color = Color.Gray,
     indicatorThickness: Dp = 14.dp,
     uiState: MainViewModel.Pomodoro

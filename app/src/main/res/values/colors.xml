@@ -8,4 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background">#16D5D5D5</color>
+
+    <color name="green_pomodoro">#4CAF50</color>
+    <color name="red_pomodoro">#FF5733</color>
 </resources>

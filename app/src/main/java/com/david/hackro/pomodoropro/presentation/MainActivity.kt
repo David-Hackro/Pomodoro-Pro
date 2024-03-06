@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.david.hackro.pomodoropro.R
 import com.david.hackro.pomodoropro.presentation.ui.components.CircularProgressbar
 import com.david.hackro.pomodoropro.presentation.ui.theme.PomodoroProTheme
+import com.david.hackro.pomodoropro.presentation.ui.theme.StartButtonColor
+import com.david.hackro.pomodoropro.presentation.ui.theme.StopButtonColor
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -73,7 +75,7 @@ fun Screen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                 Button(
                     onClick = { viewModel.stopPomodoro() },
                     colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = colorResource(id = R.color.teal_700),
+                        containerColor = StopButtonColor,
                         contentColor = colorResource(id = R.color.white)
                     )
                 ) { Text(text = stringResource(R.string.stop_pomodoro)) }
@@ -81,7 +83,7 @@ fun Screen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                 Button(
                     onClick = { viewModel.startPomodoro() },
                     colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = colorResource(id = R.color.teal_200),
+                        containerColor = StartButtonColor,
                         contentColor = colorResource(id = R.color.white)
                     )
                 ) { Text(text = stringResource(R.string.start_pomodoro)) }

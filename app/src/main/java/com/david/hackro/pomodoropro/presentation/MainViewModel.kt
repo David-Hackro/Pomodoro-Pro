@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
     val state: StateFlow<Pomodoro> = _state.asStateFlow()
     private lateinit var updateProgressJob: Job
 
-    init {
+/*    init {
         viewModelScope.launch {
             val period = getPomodoroSettingsUseCase.invoke().period
 
@@ -35,7 +35,7 @@ class MainViewModel @Inject constructor(
                 Pomodoro(isWithoutAnimation = true, period = period)
             }
         }
-    }
+    }*/
 
     private fun updateProgress() {
         updateProgressJob = viewModelScope.launch {
@@ -105,5 +105,4 @@ class MainViewModel @Inject constructor(
         var isPomodoroRunning: Boolean = false,
         val period: Long = 25 * 60 * 1000L
     )
-
 }
