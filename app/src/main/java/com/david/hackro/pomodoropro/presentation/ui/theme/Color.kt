@@ -13,6 +13,8 @@ val Pink40 = Color(0xFFBFBFBF)
 
 val ProgressBarColor = Color(0xFF2196F3) // Azul brillante
 
+val PomodoroIncompleteColor = Color(0x94CCC5C5)
+
 // Colores para botones y acciones
 val StartButtonColor = Color(0xFF2196F3) // Azul (iniciar)
 val StopButtonColor = Color(0xFF7986CB) // Rosa suave (detener)

@@ -1,10 +1,13 @@
 package com.david.hackro.pomodoropro.data
 
+import androidx.room.Query
 import com.david.hackro.pomodoropro.data.local.CurrentPomodoroEntity
 import com.david.hackro.pomodoropro.data.local.PomodoroDao
 import com.david.hackro.pomodoropro.data.local.PomodoroSettingEntity
 import com.david.hackro.pomodoropro.domain.CurrentPomodoro
 import com.david.hackro.pomodoropro.domain.PomodoroSetting
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 const val INVALID_REGISTER = -1L
@@ -54,6 +57,10 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
         val minutes: Long = localSource.getCurrentSettingPomodoro().period ?: 0
 
         return PomodoroSetting(minutes)
+    }
+
+    override fun getPomodorosToday(): Flow<List<Boolean>> {
+        return localSource.getPomodorosToday().map { it.map { it.isCompleted ?: false } }
     }
 }
 
