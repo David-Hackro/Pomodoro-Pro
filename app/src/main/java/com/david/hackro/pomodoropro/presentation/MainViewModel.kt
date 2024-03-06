@@ -2,7 +2,6 @@ package com.david.hackro.pomodoropro.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.david.hackro.pomodoropro.animationTime
 import com.david.hackro.pomodoropro.domain.CreatePomodoroUseCase
 import com.david.hackro.pomodoropro.domain.DeleteCurrentPomodoroUseCase
 import com.david.hackro.pomodoropro.domain.GetPomodoroSettingsUseCase
@@ -28,19 +27,34 @@ class MainViewModel @Inject constructor(
     val state: StateFlow<Pomodoro> = _state.asStateFlow()
     private lateinit var updateProgressJob: Job
 
+    init {
+        viewModelScope.launch {
+            val period = getPomodoroSettingsUseCase.invoke().period
+
+            _state.update {
+                Pomodoro(isWithoutAnimation = true, period = period)
+            }
+        }
+    }
+
     private fun updateProgress() {
         updateProgressJob = viewModelScope.launch {
-            val period = getPomodoroSettingsUseCase.invoke().minutesPeriod
+            val period = getPomodoroSettingsUseCase.invoke().period
 
             while ((System.currentTimeMillis() - _state.value.startTime) < period) {
                 val secondsCompleted = getSecondsCompleted()
 
                 _state.update {
-                    it.copy(secondsCompleted = secondsCompleted.toFloat(), isFirstTime = false)
+                    it.copy(
+                        secondsCompleted = secondsCompleted.toFloat(),
+                        isWithoutAnimation = false
+                    )
                 }
 
-                delay(animationTime.toLong())
+                delay(state.value.animationTime)
             }
+
+            stopPomodoro()
         }
     }
 
@@ -48,7 +62,7 @@ class MainViewModel @Inject constructor(
 
     fun startPomodoro() = viewModelScope.launch {
         val result = createPomodoroUseCase.invoke()
-        val period = getPomodoroSettingsUseCase.invoke().minutesPeriod
+        val period = getPomodoroSettingsUseCase.invoke().period
 
         if (result == null) {
             _state.update {
@@ -61,21 +75,23 @@ class MainViewModel @Inject constructor(
         _state.update {
             it.copy(
                 startTime = result.startTime,
-                isFirstTime = true,
+                isWithoutAnimation = false,
                 isPomodoroRunning = true,
-                secondsCompleted = 0.1f,
-                period = period
+                secondsCompleted = period.toFloat() / 6,
+                period = period,
             )
         }
+
+        delay(state.value.animationTime)
 
         updateProgress()
     }
 
-    fun stopPomodoro()  = viewModelScope.launch {
+    fun stopPomodoro() = viewModelScope.launch {
         deleteCurrentPomodoroUseCase.invoke()
 
         _state.update {
-            Pomodoro(isFirstTime = true)
+            Pomodoro(isWithoutAnimation = true, period = state.value.period)
         }
 
         updateProgressJob.cancel()
@@ -83,9 +99,11 @@ class MainViewModel @Inject constructor(
 
     data class Pomodoro(
         val startTime: Long = 0L,
-        val isFirstTime: Boolean = false,
+        val isWithoutAnimation: Boolean = false,
+        val animationTime: Long = 1L,
         var secondsCompleted: Float = 0f,
         var isPomodoroRunning: Boolean = false,
-        val period: Long = 0L
+        val period: Long = 25 * 60 * 1000L
     )
+
 }

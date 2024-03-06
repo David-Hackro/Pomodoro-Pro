@@ -7,7 +7,7 @@ const val DATABASE_VERSION = 1
 
 @Database(
     version = DATABASE_VERSION,
-    entities = [CurrentPomodoroEntity::class]
+    entities = [CurrentPomodoroEntity::class, PomodoroSettingEntity::class]
 )
 abstract class AppDataBase: RoomDatabase() {
     abstract fun pomodoroDao(): PomodoroDao

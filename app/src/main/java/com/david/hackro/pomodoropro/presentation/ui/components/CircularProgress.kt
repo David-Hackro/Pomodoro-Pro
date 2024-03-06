@@ -1,5 +1,6 @@
 package com.david.hackro.pomodoropro.presentation.ui.components
 
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -28,11 +29,8 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.david.hackro.pomodoropro.MAX_TIME_IN_MIN
-import com.david.hackro.pomodoropro.presentation.MainViewModel
 import com.david.hackro.pomodoropro.R
-import com.david.hackro.pomodoropro.animationTime
-import com.david.hackro.pomodoropro.getMinutesInMilliSeconds
+import com.david.hackro.pomodoropro.presentation.MainViewModel
 
 @Composable
 fun CircularProgressbar(
@@ -40,7 +38,6 @@ fun CircularProgressbar(
     foregroundIndicatorColor: Color = Color(0xFF35898f),
     shadowColor: Color = Color.Gray,
     indicatorThickness: Dp = 14.dp,
-    animationDuration: Int = animationTime,
     uiState: MainViewModel.Pomodoro
 ) {
 
@@ -54,7 +51,8 @@ fun CircularProgressbar(
     val dataUsageAnimate = animateFloatAsState(
         targetValue = dataUsageRemember,
         animationSpec = tween(
-            durationMillis = if (uiState.isFirstTime) 0 else animationDuration
+            durationMillis = if (uiState.isWithoutAnimation) 0 else uiState.animationTime.toInt(),
+            easing = LinearEasing
         ), label = ""
     )
 
@@ -94,7 +92,7 @@ fun CircularProgressbar(
                 startAngle = -90f,
                 sweepAngle = sweepAngle,
                 useCenter = false,
-                style = Stroke(width = indicatorThickness.toPx(), cap = StrokeCap.Round),
+                style = Stroke(width = indicatorThickness.toPx(), cap = StrokeCap.Butt),
                 size = Size(
                     width = (size - indicatorThickness).toPx(),
                     height = (size - indicatorThickness).toPx()
@@ -118,7 +116,7 @@ fun CircularProgressbar(
 
 
 private fun calculateCurrentAngle(dataUsageAnimate: State<Float>, period: Long) =
-    (dataUsageAnimate.value) * 360 / getMinutesInMilliSeconds(MAX_TIME_IN_MIN)
+    (dataUsageAnimate.value) * 360 / period
 
 @Composable
 fun AnimatedPreloader(modifier: Modifier = Modifier) {

@@ -6,23 +6,12 @@ import androidx.room.PrimaryKey
 import com.david.hackro.pomodoropro.domain.CurrentPomodoro
 
 @Entity
-class CurrentPomodoroEntity {
+class PomodoroSettingEntity {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 
     @ColumnInfo
-    var startTime: Long? = null
-
-    @ColumnInfo
-    var endTime: Long? = null
-
-    @ColumnInfo
     var period: Long? = null
 
-    @ColumnInfo
-    var isCompleted: Boolean? = null
 }
-
-
-fun CurrentPomodoroEntity.toDomain() = CurrentPomodoro(id ?: 0, startTime ?: 0L)

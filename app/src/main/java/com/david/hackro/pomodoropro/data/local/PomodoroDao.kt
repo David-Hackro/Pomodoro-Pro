@@ -19,4 +19,12 @@ interface PomodoroDao {
     @Update
     suspend fun updateCurrentPomodoro(currentPomodoroEntity: CurrentPomodoroEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCurrentSettingPomodoro(pomodoroSettingEntity: PomodoroSettingEntity): Long
+
+    @Query("SELECT * FROM PomodoroSettingEntity ORDER BY id DESC LIMIT 1")
+    suspend fun getCurrentSettingPomodoro(): PomodoroSettingEntity
+
+    @Update
+    suspend fun updateCurrentSettingPomodoro(pomodoroSettingEntity: PomodoroSettingEntity)
 }
