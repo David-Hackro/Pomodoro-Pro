@@ -1,6 +1,5 @@
 package com.david.hackro.pomodoropro.presentation
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.david.hackro.pomodoropro.domain.CreatePomodoroUseCase
@@ -16,14 +15,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.compose.runtime.State
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val createPomodoroUseCase: CreatePomodoroUseCase,
     private val getPomodoroSettingsUseCase: GetPomodoroSettingsUseCase,
     private val deleteCurrentPomodoroUseCase: DeleteCurrentPomodoroUseCase,
-    val getPomodorosTodayUseCase: GetPomodorosTodayUseCase
+    val getPomodoroTodayUseCase: GetPomodorosTodayUseCase
 ) :
     ViewModel() {
 
@@ -99,6 +97,6 @@ class MainViewModel @Inject constructor(
         var secondsCompleted: Float = 0f,
         var isPomodoroRunning: Boolean = false,
         val period: Long = 25 * 60 * 1000L,
-        val pomodorosToday: List<Boolean> = listOf()
+        val pomodoroByDay: List<Boolean> = listOf()
     )
 }
