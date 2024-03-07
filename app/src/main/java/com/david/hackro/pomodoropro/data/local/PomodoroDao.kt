@@ -27,6 +27,6 @@ interface PomodoroDao {
 
     @Update
     suspend fun updateCurrentSettingPomodoro(pomodoroSettingEntity: PomodoroSettingEntity)
-    @Query("SELECT * FROM CurrentPomodoroEntity")
-    fun getPomodorosToday(): Flow<List<CurrentPomodoroEntity>>
+    @Query("SELECT * FROM CurrentPomodoroEntity WHERE startTime >= :startOfDay AND startTime < :endOfDay")
+    fun getPomodorosToday(startOfDay: Long, endOfDay: Long): Flow<List<CurrentPomodoroEntity>>
 }
