@@ -21,15 +21,13 @@ class MainViewModel @Inject constructor(
     private val createPomodoroUseCase: CreatePomodoroUseCase,
     private val getPomodoroSettingsUseCase: GetPomodoroSettingsUseCase,
     private val deleteCurrentPomodoroUseCase: DeleteCurrentPomodoroUseCase,
-    val getPomodoroTodayUseCase: GetPomodorosTodayUseCase
-) :
-    ViewModel() {
+    private val getPomodoroTodayUseCase: GetPomodorosTodayUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(Pomodoro())
     val state: StateFlow<Pomodoro> = _state.asStateFlow()
     private lateinit var updateProgressJob: Job
-
-
+    val itemList = getPomodoroTodayUseCase.invoke()
     private fun updateProgress() {
         updateProgressJob = viewModelScope.launch {
             val period = getPomodoroSettingsUseCase.invoke().period
@@ -47,7 +45,7 @@ class MainViewModel @Inject constructor(
                 delay(state.value.animationTime)
             }
 
-            stopPomodoro()
+            stopPomodoro(true)
         }
     }
 
@@ -66,9 +64,8 @@ class MainViewModel @Inject constructor(
         }
 
         _state.update {
-            it.copy(
+            Pomodoro(
                 startTime = result.startTime,
-                isWithoutAnimation = false,
                 isPomodoroRunning = true,
                 secondsCompleted = period.toFloat() / 6,
                 period = period,
@@ -80,11 +77,15 @@ class MainViewModel @Inject constructor(
         updateProgress()
     }
 
-    fun stopPomodoro() = viewModelScope.launch {
+    fun stopPomodoro(isPomodoroCompleted: Boolean = false) = viewModelScope.launch {
         deleteCurrentPomodoroUseCase.invoke()
 
         _state.update {
-            Pomodoro(isWithoutAnimation = true, period = state.value.period)
+            Pomodoro(
+                isWithoutAnimation = true,
+                period = state.value.period,
+                isPomodoroCompleted = isPomodoroCompleted
+            )
         }
 
         updateProgressJob.cancel()
@@ -97,6 +98,7 @@ class MainViewModel @Inject constructor(
         var secondsCompleted: Float = 0f,
         var isPomodoroRunning: Boolean = false,
         val period: Long = 25 * 60 * 1000L,
-        val pomodoroByDay: List<Boolean> = listOf()
+        val pomodoroByDay: List<Boolean> = listOf(),
+        val isPomodoroCompleted: Boolean = false
     )
 }

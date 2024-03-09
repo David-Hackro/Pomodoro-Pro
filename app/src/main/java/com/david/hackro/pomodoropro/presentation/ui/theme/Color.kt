@@ -19,4 +19,4 @@ val PomodoroIncompleteColor = Color(0x94CCC5C5)
 val StartButtonColor = Color(0xFF2196F3)
 val StopButtonColor = Color(0xFF7986CB)
 
-val BackgroundColor = Color(0x28D5D5D5)
+val BackgroundColor = Color(0x20D5D5D5)

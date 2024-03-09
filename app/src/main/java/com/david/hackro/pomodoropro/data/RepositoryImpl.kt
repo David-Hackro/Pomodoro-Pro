@@ -14,17 +14,21 @@ const val INVALID_REGISTER = -1L
 
 class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) : IRepository {
 
+    private suspend fun loadDefaultSetting() {
+        val setting = PomodoroSettingEntity().apply { period = 1 * 10 * 1000L }
+        localSource.insertCurrentSettingPomodoro(setting)
+    }
+
     override suspend fun createPomodoro(): CurrentPomodoro? {
-/*
-      val setting = PomodoroSettingEntity().apply { period = 1 * 10 * 1000L }
-                localSource.insertCurrentSettingPomodoro(setting)
-*/
+        if (localSource.getCurrentSettingPomodoro() == null) {
+            loadDefaultSetting()
+        }
 
         val currentTime = System.currentTimeMillis()
         val currentSetting = localSource.getCurrentSettingPomodoro()
         val entity = CurrentPomodoroEntity().apply {
             startTime = currentTime
-            period = currentSetting.period
+            period = currentSetting?.period
         }
 
         val result = localSource.insertCurrentPomodoro(entity).run {
@@ -43,7 +47,7 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
             val currentSetting = getCurrentSettingPomodoro()
             val currentPomodoro = getCurrentPomodoro()
             val isCompletedPomodoro =
-                ((System.currentTimeMillis() - currentPomodoro.startTime!!) >= currentSetting.period!!)
+                ((System.currentTimeMillis() - currentPomodoro.startTime!!) >= currentSetting?.period!!)
 
             currentPomodoro.apply {
                 endTime = System.currentTimeMillis()
@@ -56,7 +60,7 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
     }
 
     override suspend fun getPomodoroSetting(): PomodoroSetting {
-        val minutes: Long = localSource.getCurrentSettingPomodoro().period ?: 0
+        val minutes: Long = localSource.getCurrentSettingPomodoro()?.period ?: 0
 
         return PomodoroSetting(minutes)
     }
@@ -68,10 +72,12 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
         return localSource.getPomodorosToday(startOfDay, endOfDay)
             .map { pomodoros ->
 
-                if (pomodoros.isNotEmpty() && pomodoros.last().endTime == null) {
-                    pomodoros.subList(0, pomodoros.size - 1).map { it.isCompleted ?: false }
-                } else {
-                    pomodoros.map { it.isCompleted ?: false }
+                pomodoros.run {
+                    if (isNotEmpty() && last().endTime == null) {
+                        subList(0, size - 1).map { it.isCompleted ?: false }
+                    } else {
+                        map { it.isCompleted ?: false }
+                    }
                 }
             }
     }

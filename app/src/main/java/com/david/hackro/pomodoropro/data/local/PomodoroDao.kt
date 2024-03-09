@@ -23,7 +23,7 @@ interface PomodoroDao {
     suspend fun insertCurrentSettingPomodoro(pomodoroSettingEntity: PomodoroSettingEntity): Long
 
     @Query("SELECT * FROM PomodoroSettingEntity ORDER BY id DESC LIMIT 1")
-    suspend fun getCurrentSettingPomodoro(): PomodoroSettingEntity
+    suspend fun getCurrentSettingPomodoro(): PomodoroSettingEntity?
 
     @Update
     suspend fun updateCurrentSettingPomodoro(pomodoroSettingEntity: PomodoroSettingEntity)
