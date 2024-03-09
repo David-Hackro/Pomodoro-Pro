@@ -12,6 +12,5 @@ class PomodoroSettingEntity {
     var id: Int? = null
 
     @ColumnInfo
-    var period: Long? = null
-
+    var period: Long = 0
 }

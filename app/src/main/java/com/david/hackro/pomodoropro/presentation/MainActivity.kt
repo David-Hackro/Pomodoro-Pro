@@ -49,6 +49,7 @@ import com.david.hackro.pomodoropro.presentation.ui.theme.Purple40
 import com.david.hackro.pomodoropro.presentation.ui.theme.StartButtonColor
 import com.david.hackro.pomodoropro.presentation.ui.theme.StopButtonColor
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -75,25 +76,21 @@ fun Screen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
     val context = LocalContext.current
 
-/*    DisposableEffect(uiState.isPomodoroCompleted) {
+    DisposableEffect(uiState.isPomodoroCompleted) {
         if (uiState.isPomodoroCompleted) {
-            Log.e("sono la", " campana")
             mediaPlayer?.release()
-            mediaPlayer = null  // Liberar la instancia actual
             mediaPlayer = MediaPlayer.create(
                 context,
                 android.provider.Settings.System.DEFAULT_NOTIFICATION_URI
             )
-            mediaPlayer?.setOnCompletionListener {
-                mediaPlayer?.release()  // Liberar después de completar la reproducción
-            }
             mediaPlayer?.start()
+            Log.e("esta sonando", " la campana")
         }
 
         onDispose {
             mediaPlayer?.release()
         }
-    }*/
+    }
 
     Column(
         modifier = modifier
@@ -139,25 +136,19 @@ fun Screen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         )
 
         Row {
-            if (uiState.isPomodoroRunning) {
-                Button(
-                    onClick = { viewModel.stopPomodoro() },
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = StopButtonColor,
-                        contentColor = colorResource(id = R.color.white)
-                    )
-                ) { Text(text = stringResource(R.string.stop_pomodoro)) }
-            } else {
-                Button(
-                    onClick = { viewModel.startPomodoro() },
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = StartButtonColor,
-                        contentColor = colorResource(id = R.color.white)
-                    )
-                ) { Text(text = stringResource(R.string.start_pomodoro)) }
-            }
+            val color = if (uiState.isPomodoroRunning) StopButtonColor else StartButtonColor
+            val text =
+                if (uiState.isPomodoroRunning) R.string.stop_pomodoro else R.string.start_pomodoro
+            val function: () -> Unit =
+                { if (uiState.isPomodoroRunning) viewModel.stopPomodoro() else viewModel.startPomodoro() }
+
+            Button(
+                onClick = function,
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = color,
+                    contentColor = colorResource(id = R.color.white)
+                )
+            ) { Text(text = stringResource(text)) }
         }
     }
 }
-
-

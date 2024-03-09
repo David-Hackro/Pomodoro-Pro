@@ -3,6 +3,7 @@ package com.david.hackro.pomodoropro.data
 import com.david.hackro.pomodoropro.data.local.CurrentPomodoroEntity
 import com.david.hackro.pomodoropro.data.local.PomodoroDao
 import com.david.hackro.pomodoropro.data.local.PomodoroSettingEntity
+import com.david.hackro.pomodoropro.data.local.toDomain
 import com.david.hackro.pomodoropro.domain.CurrentPomodoro
 import com.david.hackro.pomodoropro.domain.PomodoroSetting
 import kotlinx.coroutines.flow.Flow
@@ -11,11 +12,11 @@ import java.util.Calendar
 import javax.inject.Inject
 
 const val INVALID_REGISTER = -1L
-
+const val DEFAULT_PERIOD_TIME = 25 * 60 * 1000L // 25 Min
 class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) : IRepository {
 
     private suspend fun loadDefaultSetting() {
-        val setting = PomodoroSettingEntity().apply { period = 1 * 10 * 1000L }
+        val setting = PomodoroSettingEntity().apply { period = 1 * 20 * 1000L }
         localSource.insertCurrentSettingPomodoro(setting)
     }
 
@@ -31,32 +32,36 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
             period = currentSetting?.period
         }
 
-        val result = localSource.insertCurrentPomodoro(entity).run {
+        val resultInsert = localSource.insertCurrentPomodoro(entity).run {
             this != INVALID_REGISTER
         }
+        val result = localSource.getCurrentPomodoro().toDomain()
 
-        return if (result) {
-            CurrentPomodoro(0, currentTime)
-        } else {
-            null
-        }
+        return if (resultInsert) result else null
     }
 
     override suspend fun stopPomodoro() {
         localSource.run {
             val currentSetting = getCurrentSettingPomodoro()
             val currentPomodoro = getCurrentPomodoro()
-            val isCompletedPomodoro =
-                ((System.currentTimeMillis() - currentPomodoro.startTime!!) >= currentSetting?.period!!)
+            val isCompletedPomodoro = isCompletedPomodoro(currentPomodoro, currentSetting)
 
             currentPomodoro.apply {
                 endTime = System.currentTimeMillis()
-                period = currentSetting.period
+                period = currentSetting?.period
                 isCompleted = isCompletedPomodoro
             }
 
             updateCurrentPomodoro(currentPomodoro)
         }
+    }
+
+    private fun isCompletedPomodoro(
+        currentPomodoro: CurrentPomodoroEntity,
+        currentSetting: PomodoroSettingEntity?
+    ): Boolean {
+        return System.currentTimeMillis() - (currentPomodoro.startTime
+            ?: 0L) >= (currentSetting?.period ?: 0)
     }
 
     override suspend fun getPomodoroSetting(): PomodoroSetting {
@@ -70,9 +75,10 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
         val endOfDay = getEndOfDayTimestamp()
 
         return localSource.getPomodorosToday(startOfDay, endOfDay)
-            .map { pomodoros ->
+            .map { pomodoroList ->
 
-                pomodoros.run {
+                pomodoroList.run {
+                    //Return all pomodoros except the current pomodoro that is running
                     if (isNotEmpty() && last().endTime == null) {
                         subList(0, size - 1).map { it.isCompleted ?: false }
                     } else {
