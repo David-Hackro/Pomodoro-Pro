@@ -1,18 +1,33 @@
 # Pomodoro App - 🚧 En Construcción 🚧
 
-¡Bienvenido al repositorio de la aplicación Pomodoro en construcción!
-
-## Descripción
-Esta es una aplicación Android que implementa la técnica Pomodoro para ayudarte a mejorar la productividad. La técnica Pomodoro se basa en intervalos de trabajo concentrado seguidos de breves descansos. Actualmente, este proyecto se encuentra en una fase inicial de desarrollo y no está listo para su uso general. Estamos trabajando arduamente para completar la aplicación y proporcionaremos actualizaciones a medida que avancemos.
-
-## Estado del Proyecto
-La aplicación se encuentra actualmente en construcción y no se recomienda su implementación en un entorno de producción. Estamos desarrollando activamente nuevas características y mejorando la funcionalidad existente. Tu paciencia y colaboración son apreciadas mientras trabajamos para ofrecer una experiencia completa y efectiva.
+¡Bienvenido a la Pomodoro App! Esta aplicación Android es un ejemplo simple que utiliza la técnica Pomodoro para mejorar la gestión del tiempo y la productividad.
 
 <img src="https://github.com/David-Hackro/Pomodoro-Pro/assets/4633870/065be55f-d917-41d6-8669-78a7f0077c0a" width="300">
 
 
+## Funcionalidades
 
-¡Gracias por tu interés en nuestra aplicación Pomodoro en construcción!
+- **Iniciar y detener pomodoros:** Inicia un nuevo pomodoro para mantenerse enfocado en tus tareas y detén el temporizador cuando sea necesario.
 
+- **Historial diario:** Muestra un listado de los pomodoros ejecutados durante el día actual.
 
+- **Personalización del temporizador:** Puedes ajustar la duración del pomodoro según tus preferencias.
 
+## Cómo usar
+
+1. Clona este repositorio: `git clone https://github.com/tuusuario/nombre-del-repo.git`
+2. Abre el proyecto en Android Studio.
+3. Personaliza la duración del temporizador si es necesario.
+4. Ejecuta la aplicación en tu dispositivo o emulador Android.
+
+## Contribuciones
+
+¡Contribuciones son bienvenidas! Si encuentras algún problema o tienes ideas para mejorar la aplicación, abre un problema o envía una solicitud de extracción.
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
+
+---
+
+¡Disfruta utilizando la Pomodoro App! Siéntete libre de modificar este README según sea necesario para reflejar la simplicidad de tu proyecto. ¡Buena codificación!
