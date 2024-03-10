@@ -15,7 +15,8 @@
 
 ## Cómo usar
 
-1. Clona este repositorio: `git clone https://github.com/tuusuario/nombre-del-repo.git`
+
+1. Clona este repositorio: `git clone https://github.com/David-Hackro/Pomodoro-Pro`
 2. Abre el proyecto en Android Studio.
 3. Personaliza la duración del temporizador si es necesario.
 4. Ejecuta la aplicación en tu dispositivo o emulador Android.
