@@ -1,4 +1,4 @@
-# Pomodoro App - 🚧 En Construcción 🚧
+# Pomodoro App 🍅 - 🚧 En Construcción 🚧
 
 ¡Bienvenido a la Pomodoro App! Esta aplicación Android es un ejemplo simple que utiliza la técnica Pomodoro para mejorar la gestión del tiempo y la productividad.
 
