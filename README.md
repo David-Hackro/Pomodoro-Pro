@@ -2,8 +2,9 @@
 
 ¡Bienvenido a la Pomodoro App! Esta aplicación Android es un ejemplo simple que utiliza la técnica Pomodoro para mejorar la gestión del tiempo y la productividad.
 
-<img src="https://github.com/David-Hackro/Pomodoro-Pro/assets/4633870/065be55f-d917-41d6-8669-78a7f0077c0a" width="300">
-
+<p align="center">
+  <img src="https://github.com/David-Hackro/Pomodoro-Pro/assets/4633870/065be55f-d917-41d6-8669-78a7f0077c0a" width="200">
+</p>
 
 ## Funcionalidades
 
@@ -15,11 +16,15 @@
 
 ## Cómo usar
 
-
 1. Clona este repositorio: `git clone https://github.com/David-Hackro/Pomodoro-Pro`
 2. Abre el proyecto en Android Studio.
 3. Personaliza la duración del temporizador si es necesario.
 4. Ejecuta la aplicación en tu dispositivo o emulador Android.
+
+# Diagrama
+<p align="center">
+  <img src="https://github.com/David-Hackro/Pomodoro-Pro/assets/4633870/bc87ffcd-5d12-481b-bc70-7d40cf59b678">
+</p>
 
 ## Contribuciones
 
