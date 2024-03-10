@@ -11,5 +11,7 @@ interface IRepository {
 
     suspend fun getPomodoroSetting(): PomodoroSetting
 
+    suspend fun updatePeriodPomodoroSetting(period: Int)
+
     fun getPomodorosToday(): Flow<List<Boolean>>
 }

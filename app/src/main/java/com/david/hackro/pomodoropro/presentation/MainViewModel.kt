@@ -6,6 +6,7 @@ import com.david.hackro.pomodoropro.domain.CreatePomodoroUseCase
 import com.david.hackro.pomodoropro.domain.DeleteCurrentPomodoroUseCase
 import com.david.hackro.pomodoropro.domain.GetPomodoroSettingsUseCase
 import com.david.hackro.pomodoropro.domain.GetPomodorosTodayUseCase
+import com.david.hackro.pomodoropro.domain.UpdatePeriodPomodoroSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,13 +22,32 @@ class MainViewModel @Inject constructor(
     private val createPomodoroUseCase: CreatePomodoroUseCase,
     private val getPomodoroSettingsUseCase: GetPomodoroSettingsUseCase,
     private val deleteCurrentPomodoroUseCase: DeleteCurrentPomodoroUseCase,
-    private val getPomodoroTodayUseCase: GetPomodorosTodayUseCase
+    private val getPomodoroTodayUseCase: GetPomodorosTodayUseCase,
+    private val updatePeriodPomodoroSettingsUseCase: UpdatePeriodPomodoroSettingsUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(Pomodoro())
     val state: StateFlow<Pomodoro> = _state.asStateFlow()
+
+    private val _stateSetting = MutableStateFlow(PomodoroSetting())
+    val stateSetting: StateFlow<PomodoroSetting> = _stateSetting.asStateFlow()
+
     private lateinit var updateProgressJob: Job
     val itemList = getPomodoroTodayUseCase.invoke()
+
+    init {
+        loadPomodoroSetting()
+    }
+
+    private fun loadPomodoroSetting() = viewModelScope.launch {
+        val result = getPomodoroSettingsUseCase.invoke()
+        _stateSetting.update {
+            it.copy(
+                period = (result.period / 60 / 1000).toInt()
+            )
+        }
+    }
+
     private fun updateProgress() {
         updateProgressJob = viewModelScope.launch {
             val period = getPomodoroSettingsUseCase.invoke().period
@@ -91,6 +111,11 @@ class MainViewModel @Inject constructor(
         updateProgressJob.cancel()
     }
 
+    fun updatePeriod(period: Int) = viewModelScope.launch {
+        updatePeriodPomodoroSettingsUseCase.invoke(period)
+        loadPomodoroSetting()
+    }
+
     data class Pomodoro(
         val startTime: Long = 0L,
         val isWithoutAnimation: Boolean = false,
@@ -101,4 +126,6 @@ class MainViewModel @Inject constructor(
         val pomodoroByDay: List<Boolean> = listOf(),
         val isPomodoroCompleted: Boolean = false
     )
+
+    data class PomodoroSetting(val period: Int = 0)
 }

@@ -4,6 +4,7 @@ import com.david.hackro.pomodoropro.data.IRepository
 import com.david.hackro.pomodoropro.data.RepositoryImpl
 import com.david.hackro.pomodoropro.domain.CreatePomodoroUseCase
 import com.david.hackro.pomodoropro.domain.GetPomodoroSettingsUseCase
+import com.david.hackro.pomodoropro.domain.UpdatePeriodPomodoroSettingsUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -28,12 +29,18 @@ object PomodoroModule {
         return GetPomodoroSettingsUseCase(repository)
     }
 
-     @Module
-     @InstallIn(SingletonComponent::class)
-     interface BindRepository {
+    @Provides
+    @Singleton
+    fun provideUpdatePeriodPomodoroSettingsUseCase(repository: IRepository): UpdatePeriodPomodoroSettingsUseCase {
+        return UpdatePeriodPomodoroSettingsUseCase(repository)
+    }
 
-         @Binds
-         @Singleton
-         fun bindRepository(repository: RepositoryImpl): IRepository
-     }
+    @Module
+    @InstallIn(SingletonComponent::class)
+    interface BindRepository {
+
+        @Binds
+        @Singleton
+        fun bindRepository(repository: RepositoryImpl): IRepository
+    }
 }

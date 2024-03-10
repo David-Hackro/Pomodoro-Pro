@@ -105,12 +105,7 @@ fun CircularProgressbar(
             )
         }
 
-        // Display the data usage value
-        AnimatedPreloader(
-            Modifier
-                .fillMaxSize()
-                .padding(25.dp)
-        )
+        AnimatedPreloader(R.raw.working1)
     }
 
 }
@@ -120,9 +115,9 @@ private fun calculateCurrentAngle(dataUsageAnimate: State<Float>, period: Long) 
     (dataUsageAnimate.value) * 360 / period
 
 @Composable
-fun AnimatedPreloader(modifier: Modifier = Modifier) {
+fun AnimatedPreloader(item: Int) {
     val preloaderLottieComposition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.working1)
+        LottieCompositionSpec.RawRes(item)
     )
 
     val preloaderProgress by animateLottieCompositionAsState(
@@ -134,6 +129,7 @@ fun AnimatedPreloader(modifier: Modifier = Modifier) {
     LottieAnimation(
         composition = preloaderLottieComposition,
         progress = preloaderProgress,
-        modifier = modifier
+        modifier = Modifier.size(200.dp)
     )
+
 }

@@ -1,5 +1,8 @@
 package com.david.hackro.pomodoropro.data
 
+import com.david.hackro.pomodoropro.DEFAULT_PERIOD_TIME
+import com.david.hackro.pomodoropro.Millisecond
+import com.david.hackro.pomodoropro.SECONDS
 import com.david.hackro.pomodoropro.data.local.CurrentPomodoroEntity
 import com.david.hackro.pomodoropro.data.local.PomodoroDao
 import com.david.hackro.pomodoropro.data.local.PomodoroSettingEntity
@@ -12,18 +15,15 @@ import java.util.Calendar
 import javax.inject.Inject
 
 const val INVALID_REGISTER = -1L
-const val DEFAULT_PERIOD_TIME = 25 * 60 * 1000L // 25 Min
+
 class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) : IRepository {
 
     private suspend fun loadDefaultSetting() {
-        val setting = PomodoroSettingEntity().apply { period = 1 * 20 * 1000L }
+        val setting = PomodoroSettingEntity().apply { period = DEFAULT_PERIOD_TIME }
         localSource.insertCurrentSettingPomodoro(setting)
     }
 
     override suspend fun createPomodoro(): CurrentPomodoro? {
-        if (localSource.getCurrentSettingPomodoro() == null) {
-            loadDefaultSetting()
-        }
 
         val currentTime = System.currentTimeMillis()
         val currentSetting = localSource.getCurrentSettingPomodoro()
@@ -65,9 +65,24 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
     }
 
     override suspend fun getPomodoroSetting(): PomodoroSetting {
+        if (localSource.getCurrentSettingPomodoro() == null) {
+            loadDefaultSetting()
+        }
+
         val minutes: Long = localSource.getCurrentSettingPomodoro()?.period ?: 0
 
         return PomodoroSetting(minutes)
+    }
+
+    override suspend fun updatePeriodPomodoroSetting(periodInMinutes: Int) {
+        val periodMilliseconds = periodInMinutes * SECONDS * Millisecond
+        val currentPeriod = localSource.getCurrentSettingPomodoro()
+
+        val newSetting = currentPeriod?.apply {
+            period = periodMilliseconds
+        }
+
+        newSetting?.let { localSource.updateCurrentSettingPomodoro(it) }
     }
 
     override fun getPomodorosToday(): Flow<List<Boolean>> {
