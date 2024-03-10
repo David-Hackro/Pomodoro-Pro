@@ -2,6 +2,9 @@ package com.david.hackro.pomodoropro.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.david.hackro.pomodoropro.DEFAULT_PERIOD_TIME
+import com.david.hackro.pomodoropro.Millisecond
+import com.david.hackro.pomodoropro.SECONDS
 import com.david.hackro.pomodoropro.domain.CreatePomodoroUseCase
 import com.david.hackro.pomodoropro.domain.DeleteCurrentPomodoroUseCase
 import com.david.hackro.pomodoropro.domain.GetPomodoroSettingsUseCase
@@ -43,7 +46,7 @@ class MainViewModel @Inject constructor(
         val result = getPomodoroSettingsUseCase.invoke()
         _stateSetting.update {
             it.copy(
-                period = (result.period / 60 / 1000).toInt()
+                period = (result.period / SECONDS / Millisecond).toInt()
             )
         }
     }
@@ -76,10 +79,6 @@ class MainViewModel @Inject constructor(
         val period = getPomodoroSettingsUseCase.invoke().period
 
         if (result == null) {
-            _state.update {
-                it
-            }
-            //happend something
             return@launch
         }
 
@@ -122,7 +121,7 @@ class MainViewModel @Inject constructor(
         val animationTime: Long = 1L,
         var secondsCompleted: Float = 0f,
         var isPomodoroRunning: Boolean = false,
-        val period: Long = 25 * 60 * 1000L,
+        val period: Long = DEFAULT_PERIOD_TIME,
         val pomodoroByDay: List<Boolean> = listOf(),
         val isPomodoroCompleted: Boolean = false
     )

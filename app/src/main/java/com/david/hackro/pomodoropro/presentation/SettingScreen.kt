@@ -1,6 +1,7 @@
 package com.david.hackro.pomodoropro.presentation
 
 import android.content.Context
+import android.provider.Settings.Global.getString
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,17 +32,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.david.hackro.pomodoropro.R
+
+const val SETTING_NAV = "setting"
 
 @Composable
 fun SettingScreen(navController: NavController, viewModel: MainViewModel) {
     Box(modifier = Modifier.padding(24.dp)) {
         Column {
+
             Text(
-                text = "Minutos por pomodoro",
+                text = stringResource(id = R.string.setting_period),
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
@@ -79,13 +85,14 @@ fun DropdownMenuExample(viewModel: MainViewModel) {
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ),
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.width(150.dp)
+            modifier = Modifier.width(200.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Select Time: $selectedOption")
+
+                Text(stringResource(id = R.string.current_period, selectedOption))
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
@@ -97,7 +104,7 @@ fun DropdownMenuExample(viewModel: MainViewModel) {
         DropdownMenu(
             expanded = menuExpanded,
             onDismissRequest = { menuExpanded = false },
-            modifier = Modifier.width(150.dp)
+            modifier = Modifier.width(200.dp)
         ) {
             val values = listOf(15, 25, 45, 60)
 
@@ -110,7 +117,7 @@ fun DropdownMenuExample(viewModel: MainViewModel) {
                         showConfirmationMessage(context)
                     },
                     modifier = Modifier.width(150.dp), text = {
-                        Text("$value Minutos")
+                        Text(stringResource(id = R.string.minutes, value))
                     })
 
                 Divider(

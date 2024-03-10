@@ -50,9 +50,10 @@ import com.david.hackro.pomodoropro.presentation.ui.theme.Purple40
 import com.david.hackro.pomodoropro.presentation.ui.theme.StartButtonColor
 import com.david.hackro.pomodoropro.presentation.ui.theme.StopButtonColor
 
+const val MAIN_NAV = "main"
 
 @Composable
-fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
+fun MainScreen(navController: NavHostController, viewModel: MainViewModel ) {
     val uiState by viewModel.state.collectAsState()
     val pomodoroTodayStatus: State<List<Boolean>> =
         viewModel.itemList.collectAsState(initial = emptyList())
@@ -62,11 +63,11 @@ fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
     DisposableEffect(uiState.isPomodoroCompleted) {
         if (uiState.isPomodoroCompleted) {
             mediaPlayer?.release()
-            mediaPlayer = MediaPlayer.create(
-                context,
-                Settings.System.DEFAULT_NOTIFICATION_URI
-            )
-            mediaPlayer?.start()
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(context, Settings.System.DEFAULT_NOTIFICATION_URI)
+                prepare()
+                start()
+            }
         }
 
         onDispose {
@@ -77,7 +78,7 @@ fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
     Box {
         if (uiState.isPomodoroRunning.not()) {
             IconButton(
-                onClick = { navController.navigate("setting") },
+                onClick = { navController.navigate(SETTING_NAV) },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
@@ -112,7 +113,7 @@ fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
                     items(items = pomodoroTodayStatus.value, itemContent = { item ->
                         Icon(
                             imageVector = Icons.Default.CheckCircle,
-                            contentDescription = "Pomodoros Completed",
+                            contentDescription = null,
                             tint = if (item) Purple40 else PomodoroIncompleteColor
                         )
                     })

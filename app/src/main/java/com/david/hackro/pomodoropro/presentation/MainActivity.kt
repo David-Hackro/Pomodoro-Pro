@@ -6,11 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.david.hackro.pomodoropro.presentation.ui.theme.PomodoroProTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,24 +24,8 @@ class MainActivity : ComponentActivity() {
                 val navController: NavHostController = rememberNavController()
 
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    NavigationHost(navController = navController)
+                    NavigationHost(navController = navController, viewModel)
                 }
-            }
-        }
-    }
-
-    @Composable
-    fun NavigationHost(navController: NavHostController) {
-        NavHost(
-            navController = navController,
-            startDestination = "main"
-        ) {
-            composable("main") { MainScreen(navController = navController, viewModel = viewModel) }
-            composable("setting") {
-                SettingScreen(
-                    navController = navController,
-                    viewModel = viewModel
-                )
             }
         }
     }

@@ -7,8 +7,8 @@ import com.david.hackro.pomodoropro.data.local.CurrentPomodoroEntity
 import com.david.hackro.pomodoropro.data.local.PomodoroDao
 import com.david.hackro.pomodoropro.data.local.PomodoroSettingEntity
 import com.david.hackro.pomodoropro.data.local.toDomain
-import com.david.hackro.pomodoropro.domain.CurrentPomodoro
-import com.david.hackro.pomodoropro.domain.PomodoroSetting
+import com.david.hackro.pomodoropro.domain.model.CurrentPomodoro
+import com.david.hackro.pomodoropro.domain.model.PomodoroSettingModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
@@ -64,14 +64,14 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
             ?: 0L) >= (currentSetting?.period ?: 0)
     }
 
-    override suspend fun getPomodoroSetting(): PomodoroSetting {
+    override suspend fun getPomodoroSetting(): PomodoroSettingModel {
         if (localSource.getCurrentSettingPomodoro() == null) {
             loadDefaultSetting()
         }
 
         val minutes: Long = localSource.getCurrentSettingPomodoro()?.period ?: 0
 
-        return PomodoroSetting(minutes)
+        return PomodoroSettingModel(minutes)
     }
 
     override suspend fun updatePeriodPomodoroSetting(periodInMinutes: Int) {
