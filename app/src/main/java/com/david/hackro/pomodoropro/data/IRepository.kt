@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface IRepository {
 
-    suspend fun createPomodoro(): CurrentPomodoro?
+    suspend fun createPomodoro(): CurrentPomodoro
     suspend fun stopPomodoro()
 
     suspend fun getPomodoroSetting(): PomodoroSettingModel

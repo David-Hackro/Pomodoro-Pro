@@ -23,7 +23,7 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
         localSource.insertCurrentSettingPomodoro(setting)
     }
 
-    override suspend fun createPomodoro(): CurrentPomodoro? {
+    override suspend fun createPomodoro(): CurrentPomodoro {
 
         val currentTime = System.currentTimeMillis()
         val currentSetting = localSource.getCurrentSettingPomodoro()
@@ -32,12 +32,9 @@ class RepositoryImpl @Inject constructor(private val localSource: PomodoroDao) :
             period = currentSetting?.period
         }
 
-        val resultInsert = localSource.insertCurrentPomodoro(entity).run {
-            this != INVALID_REGISTER
-        }
-        val result = localSource.getCurrentPomodoro().toDomain()
+        localSource.insertCurrentPomodoro(entity)
 
-        return if (resultInsert) result else null
+        return localSource.getCurrentPomodoro().toDomain()
     }
 
     override suspend fun stopPomodoro() {
